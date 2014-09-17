@@ -1,0 +1,77 @@
+% Author: Brydon Eastman
+% Last Modified: September 17, 2014
+% This program is used to create circulant graphs.  A circulant graph can be 
+% drawn by calling \Circulant{n}{s1,s2,...,sk} where n is the number of vertices
+% and the si form the adjacency list. For more information, or to make changes,
+% please consult http://www.github.com/brydon/circulant
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This program is free software; you can redistribute it and/or                   %
+% modify it under the terms of the GNU General Public License                     %
+% as published by the Free Software Foundation; either version 2                  %
+% of the License, or (at your option) any later version.                          %
+%                                                                                 %
+% This program is distributed in the hope that it will be useful,                 %
+% but WITHOUT ANY WARRANTY; without even the implied warranty of                  %
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                   %
+% GNU General Public License for more details.                                    %
+%                                                                                 %
+% You should have received a copy of the GNU General Public License               %
+% along with this program; if not, write to the Free Software                     %
+% Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[ifthen, 10pt]{amsart}
+
+\usepackage{fp}							% used for floating point operations
+\usepackage{amssymb}
+\usepackage{vector}
+\usepackage{tikz}
+\usepackage{multirow} 
+\usepackage{rotating}
+\usetikzlibrary{arrows}
+
+\newcommand{\PIVAL}{3.14159265358979323846264338} %There is no easily accessible constant
+\newcounter{i} % Counter for the while loop
+%The Circulant Graph Drawing Method
+\newcommand{\Circulant}[2] { 						% Accepts 2 argument, the number of nodes, and the list of vertices
+	\begin{tikzpicture}
+	\setcounter{i}{0}
+	\whiledo{\value{i}<#1}{  						% Start counting through the nodes 
+		\FPmul\tempA{2}{\thei} 						% For the X,Y Formulae start with 2*i
+		\FPdiv\tempB{\PIVAL}{#1}						% pi/(nodes)
+		\FPmul\tempC{\tempA}{\tempB}					% 2i*pi/(nodes)
+		\FPcos\varX{\tempC} 							% x=cos(2i*pi/nodes)
+		\FPsin\varY{\tempC} 							% y=sin(2i*pi/nodes)
+		\stepcounter{i} 								% i++ (i.e. i, now equals 1)
+		\node (\thei) at (\varX,\varY)[place]{}; 	% Draw node i at x,y
+		\foreach \x in {#2} { 						% For all the variables in the vertex list
+			\pgfmathparse{mod(\x+\thei,#1)} 			% Do the modular count forward
+			\let\tempD\pgfmathresult
+			\pgfmathparse{mod(\thei-\x,#1)} 			% And the modular count backward
+			\let\tempE\pgfmathresult
+			\ifthenelse{\lengthtest{\tempE pt < 1 pt}}{\FPadd\tempE{\tempE}{#1}}{}
+			\ifthenelse{\lengthtest{\tempD pt < 1 pt}}{\FPadd\tempD{\tempD}{#1}}{}
+													% Fix some mod problems with 0 or negative numbers
+			\ifthenelse{\lengthtest{\tempE pt > \thei pt}}{}{\draw [] (\thei) to (\tempE)};
+			\ifthenelse{\lengthtest{\tempD pt > \thei pt}}{}{\draw [] (\thei) to (\tempD)};
+													% And draw the lines!
+		}
+	}
+	\end{tikzpicture}
+}
+
+\tikzstyle{place}=[circle,draw=black!100,fill=black!100,thick,inner sep=0pt,minimum size=1mm]
+\tikzstyle{left}=[>=latex,<-,semithick]
+\tikzstyle{right}=[>=latex,->,semithick]
+\tikzstyle{nleft}=[>=latex,-,semithick]
+\tikzstyle{nright}=[>=latex,-,semithick]
+% Defines different tix styles
+
+\begin{document}
+
+% Call the function telling it how many nodes to make in the first brace and the list of edges in the second brace
+\Circulant{5}{1,2,3,4,5}
+\Circulant{3}{1,2,3,4}
+
+\end{document}
