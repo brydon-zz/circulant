@@ -24,14 +24,11 @@
 \documentclass[ifthen, 10pt]{amsart}
 
 \usepackage{fp}							% used for floating point operations
-\usepackage{amssymb}
-\usepackage{vector}
-\usepackage{tikz}
-\usepackage{multirow} 
-\usepackage{rotating}
-\usetikzlibrary{arrows}
+\usepackage{tikz}						% used for the pgf graph
+\usepackage{rotating}						% used for while
 
 \newcommand{\PIVAL}{3.14159265358979323846264338} %There is no easily accessible constant
+
 \newcounter{i} % Counter for the while loop
 %The Circulant Graph Drawing Method
 \newcommand{\Circulant}[2] { 						% Accepts 2 argument, the number of nodes, and the list of vertices
@@ -71,7 +68,7 @@
 \begin{document}
 
 % Call the function telling it how many nodes to make in the first brace and the list of edges in the second brace
-\Circulant{5}{1,2,3,4,5}
-\Circulant{3}{1,2,3,4}
+\[\Circulant{5}{1,2,3,4,5}\]
+\[\Circulant{3}{1,2,3,4}\]
 
 \end{document}
